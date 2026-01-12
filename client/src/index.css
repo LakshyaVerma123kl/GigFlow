@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+/* Override the default 'dark' variant to trigger 
+  when the class ".dark" is present on the HTML tag.
+*/
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #2563eb; /* Blue 600 */
+  --color-primary-dark: #3b82f6; /* Blue 500 for dark mode */
+}
+
+/* Base styles for smooth transitions */
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 transition-colors duration-300;
+  }
+  /* Dark mode base styles */
+  :root.dark body {
+    @apply bg-gray-900 text-gray-100;
+  }
+}
