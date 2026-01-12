@@ -29,9 +29,9 @@ const CreateGig = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 transition-colors duration-300">
-        <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
+    <div className="container mx-auto px-4 py-8 md:py-12">
+      <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-6 md:p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+        <h1 className="text-2xl md:text-3xl font-bold mb-2 text-gray-900 dark:text-white">
           Post a New Job
         </h1>
         <p className="text-gray-500 dark:text-gray-400 mb-8">
@@ -90,7 +90,7 @@ const CreateGig = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-lg font-bold transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-lg font-bold transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 transform duration-100"
           >
             {loading ? "Posting Job..." : "Post Job Now"}
           </button>

@@ -3,7 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const http = require("http"); // Required for Socket.io
+const http = require("http");
 const { Server } = require("socket.io");
 
 // Import Routes

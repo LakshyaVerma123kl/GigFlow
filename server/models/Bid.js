@@ -18,7 +18,7 @@ const bidSchema = new mongoose.Schema(
     },
     price: {
       type: Number,
-      required: true, // "Bid (message + price)" [cite: 22]
+      required: true,
     },
     status: {
       type: String,

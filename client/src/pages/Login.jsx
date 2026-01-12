@@ -28,13 +28,13 @@ const Login = () => {
 
   return (
     <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+      <div className="max-w-md w-full bg-white dark:bg-gray-800 p-6 md:p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 transition-colors duration-300">
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-white">
           Welcome Back
         </h2>
 
         {error && (
-          <p className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 p-3 mb-4 rounded-lg text-sm border border-red-100 dark:border-red-800">
+          <p className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 p-3 mb-4 rounded-lg text-sm border border-red-100 dark:border-red-800 animate-pulse">
             {error}
           </p>
         )}
@@ -69,7 +69,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-blue-500/20"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-blue-500/20 active:scale-95 transform duration-100"
           >
             {loading ? "Logging in..." : "Login"}
           </button>

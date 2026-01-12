@@ -24,8 +24,8 @@ const Home = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      {/* Header & Search */}
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+      {/* Header & Search - Stacked on mobile, row on Desktop */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
             Find Gigs
@@ -34,17 +34,18 @@ const Home = () => {
             Browse open projects and start earning
           </p>
         </div>
+
+        {/* Search Bar - Full width on mobile */}
         <div className="w-full md:w-1/3 relative">
           <input
             type="text"
             placeholder="Search by title..."
-            className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white pl-10 pr-4 py-2.5 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+            className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white pl-10 pr-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          {/* Search Icon */}
           <svg
-            className="w-5 h-5 text-gray-400 absolute left-3 top-3"
+            className="w-5 h-5 text-gray-400 absolute left-3 top-3.5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -59,7 +60,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Content Grid */}
+      {/* Grid: 1 col (mobile) -> 2 col (tablet) -> 3 col (desktop) */}
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -77,7 +78,7 @@ const Home = () => {
           </button>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {gigs.map((gig) => (
             <div
               key={gig._id}
@@ -92,7 +93,7 @@ const Home = () => {
                 </span>
               </div>
 
-              <p className="text-gray-600 dark:text-gray-300 mb-6 line-clamp-3 flex-grow leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 mb-6 line-clamp-3 grow leading-relaxed">
                 {gig.description}
               </p>
 
@@ -101,7 +102,7 @@ const Home = () => {
                   <div className="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs font-bold text-gray-600 dark:text-gray-300">
                     {gig.ownerId?.name?.charAt(0).toUpperCase()}
                   </div>
-                  <span className="truncate max-w-[100px]">
+                  <span className="truncate max-w-24 md:max-w-32">
                     {gig.ownerId?.name}
                   </span>
                 </div>

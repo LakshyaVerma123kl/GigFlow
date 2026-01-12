@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Added useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import api from "../utils/api";
 
 const GigDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate(); // Initialize hook
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
   const [gig, setGig] = useState(null);
@@ -44,7 +44,6 @@ const GigDetails = () => {
     }
   }, [isOwner, id]);
 
-  // --- DELETE FUNCTIONALITY ---
   const handleDelete = async () => {
     if (
       !window.confirm(
@@ -56,14 +55,13 @@ const GigDetails = () => {
     try {
       await api.delete(`/gigs/${id}`);
       toast.success("Job deleted successfully", { theme: "colored" });
-      navigate("/"); // Redirect to Home
+      navigate("/");
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to delete job", {
         theme: "colored",
       });
     }
   };
-  // ----------------------------
 
   const handleBidSubmit = async (e) => {
     e.preventDefault();
@@ -136,26 +134,30 @@ const GigDetails = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Main Gig Card */}
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 mb-8 transition-colors duration-300">
+      <div className="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 mb-8 transition-colors duration-300 relative">
+        {/* Header Section: Stack on mobile, Row on desktop */}
         <div className="flex flex-col md:flex-row justify-between items-start mb-6 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2 leading-tight">
               {gig.title}
             </h1>
-            <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm">
+            <div className="flex flex-wrap items-center text-gray-500 dark:text-gray-400 text-sm gap-y-2">
               <span className="mr-2">
                 Posted by{" "}
                 <span className="font-semibold text-gray-800 dark:text-gray-200">
                   {gig.ownerId.name}
                 </span>
               </span>
-              <span>• {new Date(gig.createdAt).toLocaleDateString()}</span>
+              <span className="hidden md:inline">•</span>
+              <span className="w-full md:w-auto mt-1 md:mt-0 md:ml-2">
+                {new Date(gig.createdAt).toLocaleDateString()}
+              </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
             <div
-              className={`px-5 py-2 rounded-full font-bold text-sm text-white capitalize shadow-sm ${
+              className={`px-4 py-1.5 rounded-full font-bold text-xs md:text-sm text-white capitalize shadow-sm ${
                 gig.status === "open"
                   ? "bg-green-500 shadow-green-500/30"
                   : "bg-gray-500 shadow-gray-500/30"
@@ -164,7 +166,7 @@ const GigDetails = () => {
               {gig.status}
             </div>
 
-            {/* DELETE BUTTON (Visible only to Owner) */}
+            {/* DELETE BUTTON (Owner Only) */}
             {isOwner && (
               <button
                 onClick={handleDelete}
@@ -189,24 +191,25 @@ const GigDetails = () => {
           </div>
         </div>
 
-        <div className="mb-6">
-          <span className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+        {/* Budget */}
+        <div className="mb-6 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg inline-block w-full md:w-auto">
+          <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide block">
             Budget
           </span>
-          <div className="text-3xl font-bold text-green-600 dark:text-green-400 mt-1">
+          <div className="text-2xl md:text-3xl font-bold text-green-600 dark:text-green-400 mt-1">
             ${gig.budget}
           </div>
         </div>
 
-        <div className="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed bg-gray-50 dark:bg-gray-700/30 p-6 rounded-lg border border-gray-100 dark:border-gray-700">
+        <div className="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
           {gig.description}
         </div>
       </div>
 
       {/* === OWNER SECTION: Bids Management === */}
       {isOwner && (
-        <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700 transition-colors">
-          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white flex items-center">
+        <div className="bg-gray-50 dark:bg-gray-800/50 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700 transition-colors">
+          <h2 className="text-xl md:text-2xl font-bold mb-6 text-gray-900 dark:text-white flex items-center">
             Proposals
             <span className="ml-3 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 text-sm py-1 px-3 rounded-full">
               {bids.length}
@@ -222,7 +225,7 @@ const GigDetails = () => {
               {bids.map((bid) => (
                 <div
                   key={bid._id}
-                  className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between gap-4 transition-colors"
+                  className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col md:flex-row justify-between gap-4 transition-colors"
                 >
                   <div className="flex-1">
                     <div className="flex justify-between items-start mb-2">
@@ -257,7 +260,7 @@ const GigDetails = () => {
                     <div className="flex items-center">
                       <button
                         onClick={() => handleHire(bid._id)}
-                        className="w-full sm:w-auto bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-6 py-2.5 rounded-lg font-bold hover:bg-gray-800 dark:hover:bg-white/90 transition shadow-lg shadow-gray-500/20"
+                        className="w-full md:w-auto bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-6 py-2.5 rounded-lg font-bold hover:bg-gray-800 dark:hover:bg-white/90 transition shadow-lg shadow-gray-500/20"
                       >
                         Hire
                       </button>
@@ -272,8 +275,8 @@ const GigDetails = () => {
 
       {/* === FREELANCER SECTION: Submit Bid === */}
       {!isOwner && gig.status === "open" && user && (
-        <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border-t-4 border-blue-600 dark:border-blue-500 transition-colors">
-          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+        <div className="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-xl shadow-lg border-t-4 border-blue-600 dark:border-blue-500 transition-colors">
+          <h2 className="text-xl md:text-2xl font-bold mb-6 text-gray-900 dark:text-white">
             Submit a Proposal
           </h2>
           <form onSubmit={handleBidSubmit} className="space-y-6">

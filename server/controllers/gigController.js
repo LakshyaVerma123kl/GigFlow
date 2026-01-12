@@ -1,5 +1,5 @@
 const Gig = require("../models/Gig");
-const Bid = require("../models/Bid"); // Import Bid to clean up related data
+const Bid = require("../models/Bid");
 
 // @desc    Create a new Gig
 // @route   POST /api/gigs
@@ -12,7 +12,7 @@ exports.createGig = async (req, res) => {
       title,
       description,
       budget,
-      ownerId: req.user.id, // From authMiddleware
+      ownerId: req.user.id,
     });
 
     const savedGig = await newGig.save();

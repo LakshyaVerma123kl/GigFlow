@@ -140,7 +140,7 @@ exports.hireFreelancer = async (req, res) => {
 
     // Update ALL other bids for this gig -> rejected
     await Bid.updateMany(
-      { gigId: gig._id, _id: { $ne: bidId } }, // Filter: All bids for this gig EXCEPT the winner
+      { gigId: gig._id, _id: { $ne: bidId } },
       { status: "rejected" }
     ).session(session);
 
