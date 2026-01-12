@@ -3,8 +3,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const http = require("http"); // Import HTTP
-const { Server } = require("socket.io"); // Import Socket.io
+const http = require("http"); // Required for Socket.io
+const { Server } = require("socket.io");
 
 // Import Routes
 const authRoutes = require("./routes/authRoutes");
@@ -14,14 +14,15 @@ const bidRoutes = require("./routes/bidRoutes");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Create HTTP Server
+// Create HTTP Server (Wraps Express)
 const server = http.createServer(app);
 
 // Initialize Socket.io
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // Frontend URL
-    methods: ["GET", "POST", "PATCH", "DELETE"],
+    // Allow connection from deployed frontend OR localhost
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    methods: ["GET", "POST", "PATCH", "DELETE", "PUT"],
     credentials: true,
   },
 });
@@ -30,36 +31,38 @@ const io = new Server(server, {
 const userSocketMap = new Map();
 
 io.on("connection", (socket) => {
-  // Get userId from frontend connection query
+  // Get userId from frontend query
   const userId = socket.handshake.query.userId;
 
   if (userId) {
     userSocketMap.set(userId, socket.id);
-    console.log(`User connected: ${userId}`);
+    console.log(`Socket: User connected: ${userId}`);
   }
 
   socket.on("disconnect", () => {
     if (userId) {
       userSocketMap.delete(userId);
-      console.log(`User disconnected: ${userId}`);
+      console.log(`Socket: User disconnected: ${userId}`);
     }
   });
 });
 
-// Middleware to make io and userSocketMap available in Controllers
+// Middleware: Make io and userSocketMap available in Controllers
 app.use((req, res, next) => {
   req.io = io;
   req.userSocketMap = userSocketMap;
   next();
 });
 
-// Middleware
+// Standard Middleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    // Ensure this matches the Socket.io CORS origin
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   })
 );
 
@@ -79,11 +82,12 @@ app.use("/api/auth", authRoutes);
 app.use("/api/gigs", gigRoutes);
 app.use("/api/bids", bidRoutes);
 
+// Health Check Endpoint
 app.get("/", (req, res) => {
   res.send("GigFlow API is running...");
 });
 
-// Start Server (Use server.listen instead of app.listen)
+// Start Server (Use server.listen for Sockets, NOT app.listen)
 connectDB().then(() => {
   server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

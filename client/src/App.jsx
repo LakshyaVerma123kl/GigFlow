@@ -3,8 +3,9 @@ import { Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { io } from "socket.io-client";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import Styles
+import "react-toastify/dist/ReactToastify.css";
 
+// Components & Pages
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -15,18 +16,20 @@ import GigDetails from "./pages/GigDetails";
 function App() {
   const { user } = useSelector((state) => state.auth);
 
+  // Use environment variable for production, fallback to localhost for dev
+  // Note: Vercel requires variables to start with VITE_
+  const SOCKET_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   useEffect(() => {
-    // Only connect if user is logged in
+    // Only connect socket if user is logged in
     if (user && user.id) {
-      // Ensure user.id matches what backend expects
-      const socket = io("http://localhost:5000", {
-        query: { userId: user.id }, // Send UserID to backend
+      const socket = io(SOCKET_URL, {
+        query: { userId: user.id }, // Send UserID so backend can map it
       });
 
-      // Listen for notifications
+      // Listen for real-time notifications
       socket.on("notification", (data) => {
         if (data.type === "hired") {
-          // Play a sound (optional) or just show toast
           toast.success(data.message, {
             position: "top-right",
             autoClose: 5000,
@@ -38,13 +41,14 @@ function App() {
       // Cleanup on logout/unmount
       return () => socket.disconnect();
     }
-  }, [user]);
+  }, [user, SOCKET_URL]);
 
   return (
+    // Main wrapper handles Dark Mode background/text colors
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-sans transition-colors duration-300">
       <Navbar />
 
-      {/* Toast Notification Container */}
+      {/* Global Toast Container for Notifications */}
       <ToastContainer />
 
       <Routes>

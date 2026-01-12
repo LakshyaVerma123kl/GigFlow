@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // Added useNavigate
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify"; // Import Toast
+import { toast } from "react-toastify";
 import api from "../utils/api";
 
 const GigDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate(); // Initialize hook
   const { user } = useSelector((state) => state.auth);
 
   const [gig, setGig] = useState(null);
@@ -21,7 +22,7 @@ const GigDetails = () => {
         const { data } = await api.get(`/gigs/${id}`);
         setGig(data);
       } catch (err) {
-        toast.error("Failed to load gig details"); // Toast Error
+        toast.error("Failed to load gig details");
       } finally {
         setLoading(false);
       }
@@ -43,6 +44,27 @@ const GigDetails = () => {
     }
   }, [isOwner, id]);
 
+  // --- DELETE FUNCTIONALITY ---
+  const handleDelete = async () => {
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this job? This action cannot be undone."
+      )
+    )
+      return;
+
+    try {
+      await api.delete(`/gigs/${id}`);
+      toast.success("Job deleted successfully", { theme: "colored" });
+      navigate("/"); // Redirect to Home
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete job", {
+        theme: "colored",
+      });
+    }
+  };
+  // ----------------------------
+
   const handleBidSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -52,7 +74,6 @@ const GigDetails = () => {
         price: bidForm.price,
       });
 
-      // Toast Success
       toast.success("Proposal submitted successfully!", {
         position: "top-center",
         autoClose: 3000,
@@ -61,7 +82,6 @@ const GigDetails = () => {
 
       setBidForm({ message: "", price: "" });
     } catch (err) {
-      // Toast Error
       toast.error(err.response?.data?.message || "Failed to place bid", {
         position: "top-center",
         theme: "colored",
@@ -70,7 +90,6 @@ const GigDetails = () => {
   };
 
   const handleHire = async (bidId) => {
-    // Keep window.confirm for safety (blocking action)
     if (
       !window.confirm(
         "Are you sure you want to hire this freelancer? This will reject all other bids."
@@ -89,13 +108,11 @@ const GigDetails = () => {
         )
       );
 
-      // Toast Success instead of Alert
       toast.success("Freelancer Hired Successfully!", {
         position: "top-center",
         theme: "colored",
       });
     } catch (err) {
-      // Toast Error instead of Alert
       toast.error(
         "Hiring failed: " + (err.response?.data?.message || err.message),
         {
@@ -135,14 +152,40 @@ const GigDetails = () => {
               <span>• {new Date(gig.createdAt).toLocaleDateString()}</span>
             </div>
           </div>
-          <div
-            className={`px-5 py-2 rounded-full font-bold text-sm text-white capitalize shadow-sm ${
-              gig.status === "open"
-                ? "bg-green-500 shadow-green-500/30"
-                : "bg-gray-500 shadow-gray-500/30"
-            }`}
-          >
-            {gig.status}
+
+          <div className="flex items-center gap-3">
+            <div
+              className={`px-5 py-2 rounded-full font-bold text-sm text-white capitalize shadow-sm ${
+                gig.status === "open"
+                  ? "bg-green-500 shadow-green-500/30"
+                  : "bg-gray-500 shadow-gray-500/30"
+              }`}
+            >
+              {gig.status}
+            </div>
+
+            {/* DELETE BUTTON (Visible only to Owner) */}
+            {isOwner && (
+              <button
+                onClick={handleDelete}
+                className="p-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-full hover:bg-red-100 dark:hover:bg-red-900/40 transition border border-red-200 dark:border-red-800"
+                title="Delete Job"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  ></path>
+                </svg>
+              </button>
+            )}
           </div>
         </div>
 
