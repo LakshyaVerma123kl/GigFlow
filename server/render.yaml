@@ -1,0 +1,27 @@
+services:
+  # Backend Web Service
+  - type: web
+    name: gigflow-backend
+    env: node
+    plan: free
+
+    # Crucial: Tells Render to look inside the 'server' folder
+    root: server
+
+    # Commands to run inside the 'server' folder
+    buildCommand: npm install
+    startCommand: node server.js
+
+    # Environment Variables
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      # You must add these values securely in the Render Dashboard:
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CLIENT_URL
+        sync: false
