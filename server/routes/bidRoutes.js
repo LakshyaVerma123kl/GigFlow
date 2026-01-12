@@ -9,6 +9,6 @@ const verifyToken = require("../middleware/authMiddleware");
 
 router.post("/", verifyToken, placeBid);
 router.get("/:gigId", verifyToken, getBidsForGig);
-router.patch("/:bidId/hire", verifyToken, hireFreelancer); // The Hire Endpoint
+router.patch("/:bidId/hire", verifyToken, hireFreelancer); 
 
 module.exports = router;

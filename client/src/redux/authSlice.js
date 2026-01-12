@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: JSON.parse(localStorage.getItem("user")) || null, // Persist user data slightly for UI (token is safe in cookie)
+  user: JSON.parse(localStorage.getItem("user")) || null, 
   loading: false,
   error: null,
 };
@@ -17,7 +17,7 @@ const authSlice = createSlice({
     loginSuccess: (state, action) => {
       state.loading = false;
       state.user = action.payload;
-      localStorage.setItem("user", JSON.stringify(action.payload)); // Optional: save basic info
+      localStorage.setItem("user", JSON.stringify(action.payload)); 
     },
     loginFailure: (state, action) => {
       state.loading = false;
