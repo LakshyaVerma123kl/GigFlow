@@ -19,7 +19,13 @@ const Login = () => {
     dispatch(loginStart());
     try {
       const res = await api.post("/auth/login", formData);
-      dispatch(loginSuccess(res.data.user));
+      // Store the entire response including token
+      dispatch(
+        loginSuccess({
+          ...res.data.user,
+          token: res.data.token,
+        })
+      );
       navigate("/");
     } catch (err) {
       dispatch(loginFailure(err.response?.data?.message || "Login failed"));

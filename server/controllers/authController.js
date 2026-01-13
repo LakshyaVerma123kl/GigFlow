@@ -47,14 +47,16 @@ exports.login = async (req, res) => {
 
     // Send Token in HttpOnly Cookie
     res.cookie("token", token, {
-      httpOnly: true, // Prevents client-side JS from reading the cookie
-      secure: process.env.NODE_ENV === "production", // Use secure in production
-      sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
+    // Return token in response body for Authorization header
     res.json({
       message: "Logged in successfully",
+      token,
       user: { id: user._id, name: user.name, email: user.email },
     });
   } catch (err) {

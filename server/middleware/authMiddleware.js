@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const authMiddleware = (req, res, next) => {
+  // Try to get token from Authorization header first
   const authHeader = req.header("Authorization");
   let token = null;
 
@@ -8,6 +9,7 @@ const authMiddleware = (req, res, next) => {
     token = authHeader.slice(7).trim();
   }
 
+  // Fallback to cookie if no header token (for cookie-based auth)
   if (!token && req.cookies && req.cookies.token) {
     token = req.cookies.token;
   }
