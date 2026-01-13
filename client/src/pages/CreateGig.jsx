@@ -18,6 +18,18 @@ const CreateGig = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // DEBUG CODE - Add this
+    const userStr = localStorage.getItem("user");
+    console.log("Raw localStorage:", userStr);
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      console.log("Parsed user:", user);
+      console.log("Token exists:", !!user.token);
+      console.log("Token value:", user.token);
+    }
+    // END DEBUG CODE
+
     setLoading(true);
     try {
       await api.post("/gigs", formData);
@@ -27,7 +39,6 @@ const CreateGig = () => {
       setLoading(false);
     }
   };
-
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
       <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-6 md:p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 transition-colors duration-300">
