@@ -1,11 +1,26 @@
 import axios from "axios";
 
-// Use environment variable or fallback to localhost for development
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-const api = axios.create({
-  baseURL: `${BASE_URL}/api`,
-  withCredentials: true,
-});
+export const createApiClient = (token = null) => {
+  const api = axios.create({
+    baseURL: `${BASE_URL}/api`,
+    withCredentials: true,
+  });
 
-export default api;
+  api.interceptors.request.use(
+    (config) => {
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  return api;
+};
+
+export default createApiClient();
